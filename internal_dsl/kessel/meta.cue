@@ -29,15 +29,21 @@ package kessel
     relation?: string
 }
 
+#AssignMap: {
+    name: string
+    data_field?: string
+}
+
 #Assignable: {
     kind: "assignable"
-    types: [...string]
+    types: [...#AssignMap]
     cardinality: "AtMostOne" | "ExactlyOne" | "AtLeastOne" | "Any" | "All"
 }
 
 // A type schema
 #Resource: {
     relations: [string]: #RelationBody
+    data: [string]: _
 }
 
 // Root schema document
@@ -48,5 +54,3 @@ package kessel
 base: #Schema & {
 
 }
-
-schema: base & rbac & hbi

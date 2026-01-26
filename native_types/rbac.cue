@@ -1,8 +1,10 @@
 role: {
     inventory_hosts_read: bool
+    inventory_hosts_write: bool
     inventory_hosts_all: bool
 
     inventory_host_view: role["inventory_hosts_read"] || role["inventory_hosts_all"]
+    inventory_host_update: role["inventory_hosts_write"] || role["inventory_hosts_all"]
 }
 
 

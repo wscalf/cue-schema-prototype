@@ -1,0 +1,61 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "additionalProperties": true,
+    "properties": {
+        "ansible_host": {
+            "anyOf": [
+                {
+                    "type": "string",
+                    "pattern": "^.{1,255}$"
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        },
+        "insights_id": {
+            "anyOf": [
+                {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        },
+        "satellite_id": {
+            "anyOf": [
+                {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                {
+                    "type": "string",
+                    "pattern": "^\\d{10}$"
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        },
+        "subscription_manager_id": {
+            "anyOf": [
+                {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        },
+        "workspace_id": {
+            "type": "number"
+        }
+    },
+    "required": [
+        "workspace_id"
+    ]
+}
