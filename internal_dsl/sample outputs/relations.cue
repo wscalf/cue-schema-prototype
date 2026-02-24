@@ -1,3 +1,7 @@
+// This is what the unified CUE looks like for meta/hbi/rbac, with all extensions applied and data merged
+// It includes everything we'd need (plus further processing) to generate a Zanzibar schema and do some introspection
+// like mapping between data fields and relations.
+// This can be compiled from CUE files with a go library and interrogated in-memory.
 resources: {
     host: {
         relations: {

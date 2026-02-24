@@ -2,6 +2,7 @@ package rbac
 
 import ("example.com/schema/kessel")
 
+// The entrypoint for RBAC's schema fragment, contains only the concrete, non-extended parts of RBAC's schema
 rbac: kessel.#Schema & {
     resources: {
         principal: kessel.#Resource & {}
@@ -21,13 +22,14 @@ rbac: kessel.#Schema & {
 
         workspace: kessel.#Resource & {
             relations: {
-                parent: kessel.#Assignable & {types: [{name: "workspace"}], cardinality: "AtMostOne"} //Simplified since no tenant type
+                parent: kessel.#Assignable & {types: [{name: "workspace"}], cardinality: "AtMostOne"}
                 binding: kessel.#Assignable & {types: [{name: "role_binding"}], cardinality: "Any"}
             }
         }
     }
 }
 
+// Sample extension, is a parameterized template that results in a 'patch' - a schema fragment containing only the results
 #AddV1BasedPermission: {
     application: string
     resource: string
@@ -37,18 +39,21 @@ rbac: kessel.#Schema & {
     patch: kessel.#Schema & {
         resources: {
             role: {
-                let boolean = kessel.#Assignable & {types: [{name: "principal"}], cardinality: "All"}
+                let boolean = kessel.#Assignable & {types: [{name: "principal"}], cardinality: "All"} //Alias for principal:*
 
+                // V1 perm and wildcard names
                 let app_admin = "\(application)_all_all"
                 let any_verb = "\(application)_\(resource)_all"
                 let any_resource = "\(application)_any_\(verb)"
                 let v1_perm = "\(application)_\(resource)_\(verb)"
 
+                //Include them + v2_perm that ors them together
                 relations: {
                     "\(app_admin)": boolean
                     "\(any_verb)": boolean
                     "\(any_resource)": boolean
                     "\(v1_perm)": boolean
+                    //This line is a lot, but it's doing essentially the same thing as all the other v2_perm expressions, the syntax to create an inline object is just verbose
                     "\(v2_perm)": kessel.#Or & {left: kessel.#Ref & {name: app_admin}, right: kessel.#Or & {left: kessel.#Ref & {name: any_verb}, right: kessel.#Or & {left: kessel.#Ref & {name: any_resource}, right: kessel.#Or & {left: kessel.#Ref & {name: v1_perm}, right: kessel.#Ref & {name: "all_all_all"}}}}}
                 }
             }

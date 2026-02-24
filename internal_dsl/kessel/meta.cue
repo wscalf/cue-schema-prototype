@@ -1,5 +1,10 @@
 package kessel
 
+/* 
+    This package is part library and part meta-schema. It defines the types and overall structures that other packages
+    'unify' with to create a schema
+*/ 
+
 #RelationBody:
     #And | #Or | #Unless | #Ref | #Assignable
 
@@ -51,6 +56,7 @@ package kessel
     resources: [string]: #Resource
 }
 
+// The entrypoint for this module, unified into schema.cue, equivalent to an empty schema fragment
 base: #Schema & {
 
 }
