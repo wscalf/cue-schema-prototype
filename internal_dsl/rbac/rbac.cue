@@ -29,6 +29,12 @@ rbac: kessel.#Schema & {
     }
 }
 
+#Permission: {
+    application: string
+    resource: string
+    verb: string
+}
+
 // Sample extension, is a parameterized template that results in a 'patch' - a schema fragment containing only the results
 #AddV1BasedPermission: {
     application: string
@@ -68,6 +74,15 @@ rbac: kessel.#Schema & {
                 relations: {
                     "\(v2_perm)": kessel.#Or & {left: kessel.#Ref & {name: "binding", relation: "\(v2_perm)"}, right: kessel.#Ref & {name: "parent", relation: "\(v2_perm)"}}
                 }
+            }
+        }
+        metadata: {
+            let app = application
+            let res = resource
+            let act = verb
+
+            "rbac": {
+                "\(app):\(res):\(act)": #Permission & {application: "\(app)", resource: "\(res)", verb: "\(act)"}
             }
         }
     }

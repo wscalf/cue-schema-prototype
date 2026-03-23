@@ -54,6 +54,7 @@ package kessel
 // Root schema document
 #Schema: {
     resources: [string]: #Resource
+    metadata: [string]: [string]: {...}
 }
 
 // The entrypoint for this module, unified into schema.cue, equivalent to an empty schema fragment
