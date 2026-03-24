@@ -60,19 +60,28 @@ rbac: kessel.#Schema & {
                     "\(any_resource)": boolean
                     "\(v1_perm)": boolean
                     //This line is a lot, but it's doing essentially the same thing as all the other v2_perm expressions, the syntax to create an inline object is just verbose
-                    "\(v2_perm)": kessel.#Or & {left: kessel.#Ref & {name: app_admin}, right: kessel.#Or & {left: kessel.#Ref & {name: any_verb}, right: kessel.#Or & {left: kessel.#Ref & {name: any_resource}, right: kessel.#Or & {left: kessel.#Ref & {name: v1_perm}, right: kessel.#Ref & {name: "all_all_all"}}}}}
+                    "\(v2_perm)": kessel.#Or & {parts: [kessel.#Ref & {name: app_admin}, kessel.#Ref & {name: any_verb}, kessel.#Ref & {name: any_resource}, kessel.#Ref & {name: v1_perm}, kessel.#Ref & {name: "all_all_all"}]}
                 }
             }
 
             role_binding: {
                 relations: {
-                    "\(v2_perm)": kessel.#And & {left: kessel.#Ref & {name: "subject"}, right: kessel.#Ref & {name: "granted", relation: "\(v2_perm)"}}
+                    "\(v2_perm)": kessel.#And & {parts: [kessel.#Ref & {name: "subject"}, kessel.#Ref & {name: "granted", relation: "\(v2_perm)"}]}
                 }
             }
 
             workspace: {
                 relations: {
-                    "\(v2_perm)": kessel.#Or & {left: kessel.#Ref & {name: "binding", relation: "\(v2_perm)"}, right: kessel.#Ref & {name: "parent", relation: "\(v2_perm)"}}
+                    "\(v2_perm)": kessel.#Or & {parts: [kessel.#Ref & {name: "binding", relation: "\(v2_perm)"}, kessel.#Ref & {name: "parent", relation: "\(v2_perm)"}]}
+                }
+                // read_perms only exists when verb == "read"; absent fields are not null, so gate on the same condition (and keep read_perms beside the relations that use it).
+                if verb == "read" {
+                    _read_perms: {
+                        "\(v2_perm)": {}
+                    }
+                    relations: {
+                        "view_metadata": kessel.#Or & {parts: [for perm, _ in _read_perms { kessel.#Ref & {name: perm} }]}
+                    }
                 }
             }
         }

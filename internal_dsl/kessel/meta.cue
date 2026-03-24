@@ -10,20 +10,17 @@ package kessel
 
 #And: {
     kind: "and"
-    left: #RelationBody
-    right: #RelationBody
+    parts: [...#RelationBody]
 }
 
 #Or: {
     kind: "or"
-    left: #RelationBody
-    right: #RelationBody
+    parts: [...#RelationBody]
 }
 
 #Unless: {
     kind: "unless"
-    left: #RelationBody
-    right: #RelationBody
+    parts: [...#RelationBody]
 }
 
 // Reference to something in your model (relationship/permission/etc.)
@@ -49,6 +46,7 @@ package kessel
 #Resource: {
     relations: [string]: #RelationBody
     data: [string]: _
+    ...
 }
 
 // Root schema document

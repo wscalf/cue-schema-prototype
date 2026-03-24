@@ -76,35 +76,22 @@ resources: {
             }
             inventory_host_view: {
                 kind: "or"
-                left: {
+                parts: [{
                     kind: "ref"
                     name: "inventory_all_all"
-                }
-                right: {
-                    kind: "or"
-                    left: {
-                        kind: "ref"
-                        name: "inventory_hosts_all"
-                    }
-                    right: {
-                        kind: "or"
-                        left: {
-                            kind: "ref"
-                            name: "inventory_any_read"
-                        }
-                        right: {
-                            kind: "or"
-                            left: {
-                                kind: "ref"
-                                name: "inventory_hosts_read"
-                            }
-                            right: {
-                                kind: "ref"
-                                name: "all_all_all"
-                            }
-                        }
-                    }
-                }
+                }, {
+                    kind: "ref"
+                    name: "inventory_hosts_all"
+                }, {
+                    kind: "ref"
+                    name: "inventory_any_read"
+                }, {
+                    kind: "ref"
+                    name: "inventory_hosts_read"
+                }, {
+                    kind: "ref"
+                    name: "all_all_all"
+                }]
             }
             inventory_any_write: {
                 kind: "assignable"
@@ -122,35 +109,22 @@ resources: {
             }
             inventory_host_update: {
                 kind: "or"
-                left: {
+                parts: [{
                     kind: "ref"
                     name: "inventory_all_all"
-                }
-                right: {
-                    kind: "or"
-                    left: {
-                        kind: "ref"
-                        name: "inventory_hosts_all"
-                    }
-                    right: {
-                        kind: "or"
-                        left: {
-                            kind: "ref"
-                            name: "inventory_any_write"
-                        }
-                        right: {
-                            kind: "or"
-                            left: {
-                                kind: "ref"
-                                name: "inventory_hosts_write"
-                            }
-                            right: {
-                                kind: "ref"
-                                name: "all_all_all"
-                            }
-                        }
-                    }
-                }
+                }, {
+                    kind: "ref"
+                    name: "inventory_hosts_all"
+                }, {
+                    kind: "ref"
+                    name: "inventory_any_write"
+                }, {
+                    kind: "ref"
+                    name: "inventory_hosts_write"
+                }, {
+                    kind: "ref"
+                    name: "all_all_all"
+                }]
             }
             remediations_all_all: {
                 kind: "assignable"
@@ -182,35 +156,22 @@ resources: {
             }
             remediations_remediation_view: {
                 kind: "or"
-                left: {
+                parts: [{
                     kind: "ref"
                     name: "remediations_all_all"
-                }
-                right: {
-                    kind: "or"
-                    left: {
-                        kind: "ref"
-                        name: "remediations_remediations_all"
-                    }
-                    right: {
-                        kind: "or"
-                        left: {
-                            kind: "ref"
-                            name: "remediations_any_read"
-                        }
-                        right: {
-                            kind: "or"
-                            left: {
-                                kind: "ref"
-                                name: "remediations_remediations_read"
-                            }
-                            right: {
-                                kind: "ref"
-                                name: "all_all_all"
-                            }
-                        }
-                    }
-                }
+                }, {
+                    kind: "ref"
+                    name: "remediations_remediations_all"
+                }, {
+                    kind: "ref"
+                    name: "remediations_any_read"
+                }, {
+                    kind: "ref"
+                    name: "remediations_remediations_read"
+                }, {
+                    kind: "ref"
+                    name: "all_all_all"
+                }]
             }
             remediations_any_write: {
                 kind: "assignable"
@@ -228,35 +189,22 @@ resources: {
             }
             remediations_remediation_update: {
                 kind: "or"
-                left: {
+                parts: [{
                     kind: "ref"
                     name: "remediations_all_all"
-                }
-                right: {
-                    kind: "or"
-                    left: {
-                        kind: "ref"
-                        name: "remediations_remediations_all"
-                    }
-                    right: {
-                        kind: "or"
-                        left: {
-                            kind: "ref"
-                            name: "remediations_any_write"
-                        }
-                        right: {
-                            kind: "or"
-                            left: {
-                                kind: "ref"
-                                name: "remediations_remediations_write"
-                            }
-                            right: {
-                                kind: "ref"
-                                name: "all_all_all"
-                            }
-                        }
-                    }
-                }
+                }, {
+                    kind: "ref"
+                    name: "remediations_remediations_all"
+                }, {
+                    kind: "ref"
+                    name: "remediations_any_write"
+                }, {
+                    kind: "ref"
+                    name: "remediations_remediations_write"
+                }, {
+                    kind: "ref"
+                    name: "all_all_all"
+                }]
             }
         }
         data: {}
@@ -279,51 +227,47 @@ resources: {
             }
             inventory_host_view: {
                 kind: "and"
-                left: {
+                parts: [{
                     kind: "ref"
                     name: "subject"
-                }
-                right: {
+                }, {
                     kind:     "ref"
                     name:     "granted"
                     relation: "inventory_host_view"
-                }
+                }]
             }
             inventory_host_update: {
                 kind: "and"
-                left: {
+                parts: [{
                     kind: "ref"
                     name: "subject"
-                }
-                right: {
+                }, {
                     kind:     "ref"
                     name:     "granted"
                     relation: "inventory_host_update"
-                }
+                }]
             }
             remediations_remediation_view: {
                 kind: "and"
-                left: {
+                parts: [{
                     kind: "ref"
                     name: "subject"
-                }
-                right: {
+                }, {
                     kind:     "ref"
                     name:     "granted"
                     relation: "remediations_remediation_view"
-                }
+                }]
             }
             remediations_remediation_update: {
                 kind: "and"
-                left: {
+                parts: [{
                     kind: "ref"
                     name: "subject"
-                }
-                right: {
+                }, {
                     kind:     "ref"
                     name:     "granted"
                     relation: "remediations_remediation_update"
-                }
+                }]
             }
         }
         data: {}
@@ -344,57 +288,63 @@ resources: {
                 }]
                 cardinality: "Any"
             }
+            view_metadata: {
+                kind: "or"
+                parts: [{
+                    kind: "ref"
+                    name: "inventory_host_view"
+                }, {
+                    kind: "ref"
+                    name: "remediations_remediation_view"
+                }]
+            }
             inventory_host_view: {
                 kind: "or"
-                left: {
+                parts: [{
                     kind:     "ref"
                     name:     "binding"
                     relation: "inventory_host_view"
-                }
-                right: {
+                }, {
                     kind:     "ref"
                     name:     "parent"
                     relation: "inventory_host_view"
-                }
+                }]
             }
             inventory_host_update: {
                 kind: "or"
-                left: {
+                parts: [{
                     kind:     "ref"
                     name:     "binding"
                     relation: "inventory_host_update"
-                }
-                right: {
+                }, {
                     kind:     "ref"
                     name:     "parent"
                     relation: "inventory_host_update"
-                }
+                }]
             }
             remediations_remediation_view: {
                 kind: "or"
-                left: {
+                parts: [{
                     kind:     "ref"
                     name:     "binding"
                     relation: "remediations_remediation_view"
-                }
-                right: {
+                }, {
                     kind:     "ref"
                     name:     "parent"
                     relation: "remediations_remediation_view"
-                }
+                }]
             }
             remediations_remediation_update: {
                 kind: "or"
-                left: {
+                parts: [{
                     kind:     "ref"
                     name:     "binding"
                     relation: "remediations_remediation_update"
-                }
-                right: {
+                }, {
                     kind:     "ref"
                     name:     "parent"
                     relation: "remediations_remediation_update"
-                }
+                }]
             }
         }
         data: {}
