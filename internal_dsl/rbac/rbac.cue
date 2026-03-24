@@ -77,7 +77,7 @@ rbac: kessel.#Schema & {
             }
         }
         metadata: {
-            let app = application
+            let app = application //Need to assign to a variable to avoid shadowing the struct member
             let res = resource
             let act = verb
 

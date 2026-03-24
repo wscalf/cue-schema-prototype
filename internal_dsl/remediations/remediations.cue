@@ -3,6 +3,7 @@ package remediations
 import ("example.com/schema/kessel"
 "example.com/schema/rbac")
 
+// Remediations doesn't onboard any resources, so its schema is empty + RBAC templates
 remediations: kessel.#Schema & {
 
 } & (rbac.#AddV1BasedPermission & {

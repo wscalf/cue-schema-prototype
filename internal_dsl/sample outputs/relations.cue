@@ -29,7 +29,9 @@ resources: {
                 relation: "inventory_host_update"
             }
         }
-        data: {}
+        data: {
+            workspace_id: number
+        }
     }
     principal: {
         relations: {}
@@ -150,6 +152,112 @@ resources: {
                     }
                 }
             }
+            remediations_all_all: {
+                kind: "assignable"
+                types: [{
+                    name: "principal"
+                }]
+                cardinality: "All"
+            }
+            remediations_remediations_all: {
+                kind: "assignable"
+                types: [{
+                    name: "principal"
+                }]
+                cardinality: "All"
+            }
+            remediations_any_read: {
+                kind: "assignable"
+                types: [{
+                    name: "principal"
+                }]
+                cardinality: "All"
+            }
+            remediations_remediations_read: {
+                kind: "assignable"
+                types: [{
+                    name: "principal"
+                }]
+                cardinality: "All"
+            }
+            remediations_remediation_view: {
+                kind: "or"
+                left: {
+                    kind: "ref"
+                    name: "remediations_all_all"
+                }
+                right: {
+                    kind: "or"
+                    left: {
+                        kind: "ref"
+                        name: "remediations_remediations_all"
+                    }
+                    right: {
+                        kind: "or"
+                        left: {
+                            kind: "ref"
+                            name: "remediations_any_read"
+                        }
+                        right: {
+                            kind: "or"
+                            left: {
+                                kind: "ref"
+                                name: "remediations_remediations_read"
+                            }
+                            right: {
+                                kind: "ref"
+                                name: "all_all_all"
+                            }
+                        }
+                    }
+                }
+            }
+            remediations_any_write: {
+                kind: "assignable"
+                types: [{
+                    name: "principal"
+                }]
+                cardinality: "All"
+            }
+            remediations_remediations_write: {
+                kind: "assignable"
+                types: [{
+                    name: "principal"
+                }]
+                cardinality: "All"
+            }
+            remediations_remediation_update: {
+                kind: "or"
+                left: {
+                    kind: "ref"
+                    name: "remediations_all_all"
+                }
+                right: {
+                    kind: "or"
+                    left: {
+                        kind: "ref"
+                        name: "remediations_remediations_all"
+                    }
+                    right: {
+                        kind: "or"
+                        left: {
+                            kind: "ref"
+                            name: "remediations_any_write"
+                        }
+                        right: {
+                            kind: "or"
+                            left: {
+                                kind: "ref"
+                                name: "remediations_remediations_write"
+                            }
+                            right: {
+                                kind: "ref"
+                                name: "all_all_all"
+                            }
+                        }
+                    }
+                }
+            }
         }
         data: {}
     }
@@ -191,6 +299,30 @@ resources: {
                     kind:     "ref"
                     name:     "granted"
                     relation: "inventory_host_update"
+                }
+            }
+            remediations_remediation_view: {
+                kind: "and"
+                left: {
+                    kind: "ref"
+                    name: "subject"
+                }
+                right: {
+                    kind:     "ref"
+                    name:     "granted"
+                    relation: "remediations_remediation_view"
+                }
+            }
+            remediations_remediation_update: {
+                kind: "and"
+                left: {
+                    kind: "ref"
+                    name: "subject"
+                }
+                right: {
+                    kind:     "ref"
+                    name:     "granted"
+                    relation: "remediations_remediation_update"
                 }
             }
         }
@@ -238,7 +370,57 @@ resources: {
                     relation: "inventory_host_update"
                 }
             }
+            remediations_remediation_view: {
+                kind: "or"
+                left: {
+                    kind:     "ref"
+                    name:     "binding"
+                    relation: "remediations_remediation_view"
+                }
+                right: {
+                    kind:     "ref"
+                    name:     "parent"
+                    relation: "remediations_remediation_view"
+                }
+            }
+            remediations_remediation_update: {
+                kind: "or"
+                left: {
+                    kind:     "ref"
+                    name:     "binding"
+                    relation: "remediations_remediation_update"
+                }
+                right: {
+                    kind:     "ref"
+                    name:     "parent"
+                    relation: "remediations_remediation_update"
+                }
+            }
         }
         data: {}
+    }
+}
+metadata: {
+    rbac: {
+        "inventory:hosts:read": {
+            application: "inventory"
+            resource:    "hosts"
+            verb:        "read"
+        }
+        "inventory:hosts:write": {
+            application: "inventory"
+            resource:    "hosts"
+            verb:        "write"
+        }
+        "remediations:remediations:read": {
+            application: "remediations"
+            resource:    "remediations"
+            verb:        "read"
+        }
+        "remediations:remediations:write": {
+            application: "remediations"
+            resource:    "remediations"
+            verb:        "write"
+        }
     }
 }
