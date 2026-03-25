@@ -51,8 +51,10 @@ package kessel
 
 // Root schema document
 #Schema: {
-    resources: [string]: #Resource
-    metadata: [string]: [string]: {...} // Map of string (service) to string (key) to any struct (service defined)
+    [string]: { //Map from namespace to resources and metadata
+        resources: [string]: #Resource
+        metadata: [string]: {...} //Map from key to value
+    }
 }
 
 // The entrypoint for this module, unified into schema.cue, equivalent to an empty schema fragment

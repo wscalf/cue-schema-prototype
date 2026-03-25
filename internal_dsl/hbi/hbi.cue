@@ -10,23 +10,25 @@ let uuid = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-f
 // Will be unified with other fragments in schema.cue
 // Note that this results in a flat schema (no namespace/reporter distinction) - this was due to an oversite in this prototype and not a CUE limitation
 hbi: kessel.#Schema & {
-    resources: {
-        host: { //Host type definition
-            relations: { // Relations are defined in a block (essentially an array) referencing things by name. Extensions are handled separately.
-                // For this assignable relation, it's mapped to a data field to get the value from. This is shown as an alternative to assignable relations being special fields
-                // and is not due to a limitation or particular advantage of CUE.
-                workspace: kessel.#Assignable & {types: [{name: "workspace", data_field: "workspace_id"}], cardinality: "ExactlyOne"}
-                view: kessel.#Ref & {name: "workspace", relation: "inventory_host_view"}
-                update: kessel.#Ref & {name: "workspace", relation: "inventory_host_update"}
-                delete: kessel.#Ref & {name: "workspace", relation: "inventory_host_update"}
-            }
-            data: { // Data fields are also defined in a block as properties with data types in the native type system.
-                //These are essentially unsatisfied fields in the model which will be used later for generating JSONSchema (for what data would complete the model)
-                workspace_id: number
-                subscription_manager_id?: =~ uuid | null
-                satellite_id?: =~ uuid | =~"^\\d{10}$" | null
-                insights_id?: =~ uuid | null
-                ansible_host?: =~ "^.{1,255}$" | null
+    "hbi": {
+        resources: {
+            host: { //Host type definition
+                relations: { // Relations are defined in a block (essentially an array) referencing things by name. Extensions are handled separately.
+                    // For this assignable relation, it's mapped to a data field to get the value from. This is shown as an alternative to assignable relations being special fields
+                    // and is not due to a limitation or particular advantage of CUE.
+                    workspace: kessel.#Assignable & {types: [{name: "workspace", data_field: "workspace_id"}], cardinality: "ExactlyOne"}
+                    view: kessel.#Ref & {name: "workspace", relation: "inventory_host_view"}
+                    update: kessel.#Ref & {name: "workspace", relation: "inventory_host_update"}
+                    delete: kessel.#Ref & {name: "workspace", relation: "inventory_host_update"}
+                }
+                data: { // Data fields are also defined in a block as properties with data types in the native type system.
+                    //These are essentially unsatisfied fields in the model which will be used later for generating JSONSchema (for what data would complete the model)
+                    workspace_id: number
+                    subscription_manager_id?: =~ uuid | null
+                    satellite_id?: =~ uuid | =~"^\\d{10}$" | null
+                    insights_id?: =~ uuid | null
+                    ansible_host?: =~ "^.{1,255}$" | null
+                }
             }
         }
     }
