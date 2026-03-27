@@ -24,10 +24,10 @@ hbi: kessel.#Schema & {
                 data: { // Data fields are also defined in a block as properties with data types in the native type system.
                     //These are essentially unsatisfied fields in the model which will be used later for generating JSONSchema (for what data would complete the model)
                     workspace_id: number
-                    subscription_manager_id?: =~ uuid | null
-                    satellite_id?: =~ uuid | =~"^\\d{10}$" | null
-                    insights_id?: =~ uuid | null
-                    ansible_host?: =~ "^.{1,255}$" | null
+                    subscription_manager_id?: =~ uuid
+                    satellite_id?: =~ uuid | =~"^\\d{10}$"
+                    insights_id?: =~ uuid
+                    ansible_host?: =~ "^.{1,255}$"
                 }
             }
         }
