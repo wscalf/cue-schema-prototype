@@ -16,4 +16,9 @@ remediations: kessel.#Schema & {
     resource: "remediations"
     verb: "write"
     v2_perm: "remediations_remediation_update"
+}).patch & (rbac.#AddV1BasedPermission & {
+    application: "remediations"
+    resource: "remediations"
+    verb: "delete"
+    v2_perm: "remediations_remediation_delete"
 }).patch
