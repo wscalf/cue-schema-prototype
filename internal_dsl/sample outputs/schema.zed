@@ -1,0 +1,91 @@
+definition hbi/host {
+	permission workspace = t_workspace
+	permission view = t_workspace->inventory_host_view
+	permission update = t_workspace->inventory_host_update
+	permission delete = t_workspace->inventory_host_update
+	relation t_workspace: rbac/workspace
+}
+
+definition rbac/principal {}
+
+definition rbac/role {
+	permission all_all_all = t_all_all_all
+	permission inventory_all_all = t_inventory_all_all
+	permission inventory_hosts_all = t_inventory_hosts_all
+	permission inventory_any_read = t_inventory_any_read
+	permission inventory_hosts_read = t_inventory_hosts_read
+	permission inventory_host_view = inventory_all_all + inventory_hosts_all + inventory_any_read + inventory_hosts_read + all_all_all
+	permission inventory_any_write = t_inventory_any_write
+	permission inventory_hosts_write = t_inventory_hosts_write
+	permission inventory_host_update = inventory_all_all + inventory_hosts_all + inventory_any_write + inventory_hosts_write + all_all_all
+	permission remediations_all_all = t_remediations_all_all
+	permission remediations_remediations_all = t_remediations_remediations_all
+	permission remediations_any_read = t_remediations_any_read
+	permission remediations_remediations_read = t_remediations_remediations_read
+	permission remediations_remediation_view = remediations_all_all + remediations_remediations_all + remediations_any_read + remediations_remediations_read + all_all_all
+	permission remediations_any_write = t_remediations_any_write
+	permission remediations_remediations_write = t_remediations_remediations_write
+	permission remediations_remediation_update = remediations_all_all + remediations_remediations_all + remediations_any_write + remediations_remediations_write + all_all_all
+	permission remediations_any_delete = t_remediations_any_delete
+	permission remediations_remediations_delete = t_remediations_remediations_delete
+	permission remediations_remediation_delete = remediations_all_all + remediations_remediations_all + remediations_any_delete + remediations_remediations_delete + all_all_all
+	permission tasks_all_all = t_tasks_all_all
+	permission tasks_tasks_all = t_tasks_tasks_all
+	permission tasks_any_read = t_tasks_any_read
+	permission tasks_tasks_read = t_tasks_tasks_read
+	permission tasks_task_view = tasks_all_all + tasks_tasks_all + tasks_any_read + tasks_tasks_read + all_all_all
+	permission tasks_any_write = t_tasks_any_write
+	permission tasks_tasks_write = t_tasks_tasks_write
+	permission tasks_task_update = tasks_all_all + tasks_tasks_all + tasks_any_write + tasks_tasks_write + all_all_all
+	relation t_all_all_all: rbac/principal:*
+	relation t_inventory_all_all: rbac/principal:*
+	relation t_inventory_hosts_all: rbac/principal:*
+	relation t_inventory_any_read: rbac/principal:*
+	relation t_inventory_hosts_read: rbac/principal:*
+	relation t_inventory_any_write: rbac/principal:*
+	relation t_inventory_hosts_write: rbac/principal:*
+	relation t_remediations_all_all: rbac/principal:*
+	relation t_remediations_remediations_all: rbac/principal:*
+	relation t_remediations_any_read: rbac/principal:*
+	relation t_remediations_remediations_read: rbac/principal:*
+	relation t_remediations_any_write: rbac/principal:*
+	relation t_remediations_remediations_write: rbac/principal:*
+	relation t_remediations_any_delete: rbac/principal:*
+	relation t_remediations_remediations_delete: rbac/principal:*
+	relation t_tasks_all_all: rbac/principal:*
+	relation t_tasks_tasks_all: rbac/principal:*
+	relation t_tasks_any_read: rbac/principal:*
+	relation t_tasks_tasks_read: rbac/principal:*
+	relation t_tasks_any_write: rbac/principal:*
+	relation t_tasks_tasks_write: rbac/principal:*
+}
+
+definition rbac/role_binding {
+	permission subject = t_subject
+	permission granted = t_granted
+	permission inventory_host_view = (subject & t_granted->inventory_host_view)
+	permission inventory_host_update = (subject & t_granted->inventory_host_update)
+	permission remediations_remediation_view = (subject & t_granted->remediations_remediation_view)
+	permission remediations_remediation_update = (subject & t_granted->remediations_remediation_update)
+	permission remediations_remediation_delete = (subject & t_granted->remediations_remediation_delete)
+	permission tasks_task_view = (subject & t_granted->tasks_task_view)
+	permission tasks_task_update = (subject & t_granted->tasks_task_update)
+	relation t_subject: rbac/principal
+	relation t_granted: rbac/role
+}
+
+definition rbac/workspace {
+	permission parent = t_parent
+	permission binding = t_binding
+	permission view_metadata = inventory_host_view + remediations_remediation_view + tasks_task_view
+	permission inventory_host_view = t_binding->inventory_host_view + t_parent->inventory_host_view
+	permission inventory_host_update = t_binding->inventory_host_update + t_parent->inventory_host_update
+	permission remediations_remediation_view = t_binding->remediations_remediation_view + t_parent->remediations_remediation_view
+	permission remediations_remediation_update = t_binding->remediations_remediation_update + t_parent->remediations_remediation_update
+	permission remediations_remediation_delete = t_binding->remediations_remediation_delete + t_parent->remediations_remediation_delete
+	permission tasks_task_view = t_binding->tasks_task_view + t_parent->tasks_task_view
+	permission tasks_task_update = t_binding->tasks_task_update + t_parent->tasks_task_update
+	relation t_parent: rbac/workspace
+	relation t_binding: rbac/role_binding
+}
+

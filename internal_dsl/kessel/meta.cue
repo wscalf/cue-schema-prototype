@@ -42,10 +42,9 @@ package kessel
     cardinality: "AtMostOne" | "ExactlyOne" | "AtLeastOne" | "Any" | "All"
 }
 
-// A type schema
+// A type schema — relations and data fields coexist at the same level.
+// Relations are identified at runtime by their `kind` field.
 #Resource: {
-    relations: [string]: #RelationBody
-    data: [string]: _
     ...
 }
 

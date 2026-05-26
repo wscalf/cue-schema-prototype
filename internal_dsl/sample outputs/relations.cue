@@ -1,16 +1,11 @@
-// This is what the unified CUE looks like for meta/hbi/rbac, with all extensions applied and data merged
-// It includes everything we'd need (plus further processing) to generate a Zanzibar schema and do some introspection
-// like mapping between data fields and relations.
-// This can be compiled from CUE files with a go library and interrogated in-memory.
-hbi: {
-    resources: {
-        host: {
-            relations: {
+schema: {
+    hbi: {
+        resources: {
+            host: {
                 workspace: {
                     kind: "assignable"
                     types: [{
-                        name:       "workspace"
-                        data_field: "workspace_id"
+                        name: "workspace"
                     }]
                     cardinality: "ExactlyOne"
                 }
@@ -30,21 +25,13 @@ hbi: {
                     relation: "inventory_host_update"
                 }
             }
-            data: {
-                workspace_id: number
-            }
         }
+        metadata: {}
     }
-    metadata: {}
-}
-rbac: {
-    resources: {
-        principal: {
-            relations: {}
-            data: {}
-        }
-        role: {
-            relations: {
+    rbac: {
+        resources: {
+            principal: {}
+            role: {
                 all_all_all: {
                     kind: "assignable"
                     types: [{
@@ -212,11 +199,121 @@ rbac: {
                         name: "all_all_all"
                     }]
                 }
+                remediations_any_delete: {
+                    kind: "assignable"
+                    types: [{
+                        name: "principal"
+                    }]
+                    cardinality: "All"
+                }
+                remediations_remediations_delete: {
+                    kind: "assignable"
+                    types: [{
+                        name: "principal"
+                    }]
+                    cardinality: "All"
+                }
+                remediations_remediation_delete: {
+                    kind: "or"
+                    parts: [{
+                        kind: "ref"
+                        name: "remediations_all_all"
+                    }, {
+                        kind: "ref"
+                        name: "remediations_remediations_all"
+                    }, {
+                        kind: "ref"
+                        name: "remediations_any_delete"
+                    }, {
+                        kind: "ref"
+                        name: "remediations_remediations_delete"
+                    }, {
+                        kind: "ref"
+                        name: "all_all_all"
+                    }]
+                }
+                tasks_all_all: {
+                    kind: "assignable"
+                    types: [{
+                        name: "principal"
+                    }]
+                    cardinality: "All"
+                }
+                tasks_tasks_all: {
+                    kind: "assignable"
+                    types: [{
+                        name: "principal"
+                    }]
+                    cardinality: "All"
+                }
+                tasks_any_read: {
+                    kind: "assignable"
+                    types: [{
+                        name: "principal"
+                    }]
+                    cardinality: "All"
+                }
+                tasks_tasks_read: {
+                    kind: "assignable"
+                    types: [{
+                        name: "principal"
+                    }]
+                    cardinality: "All"
+                }
+                tasks_task_view: {
+                    kind: "or"
+                    parts: [{
+                        kind: "ref"
+                        name: "tasks_all_all"
+                    }, {
+                        kind: "ref"
+                        name: "tasks_tasks_all"
+                    }, {
+                        kind: "ref"
+                        name: "tasks_any_read"
+                    }, {
+                        kind: "ref"
+                        name: "tasks_tasks_read"
+                    }, {
+                        kind: "ref"
+                        name: "all_all_all"
+                    }]
+                }
+                tasks_any_write: {
+                    kind: "assignable"
+                    types: [{
+                        name: "principal"
+                    }]
+                    cardinality: "All"
+                }
+                tasks_tasks_write: {
+                    kind: "assignable"
+                    types: [{
+                        name: "principal"
+                    }]
+                    cardinality: "All"
+                }
+                tasks_task_update: {
+                    kind: "or"
+                    parts: [{
+                        kind: "ref"
+                        name: "tasks_all_all"
+                    }, {
+                        kind: "ref"
+                        name: "tasks_tasks_all"
+                    }, {
+                        kind: "ref"
+                        name: "tasks_any_write"
+                    }, {
+                        kind: "ref"
+                        name: "tasks_tasks_write"
+                    }, {
+                        kind: "ref"
+                        name: "all_all_all"
+                    }]
+                }
             }
-            data: {}
-        }
-        role_binding: {
-            relations: {
+            role_binding: {
                 subject: {
                     kind: "assignable"
                     types: [{
@@ -275,11 +372,41 @@ rbac: {
                         relation: "remediations_remediation_update"
                     }]
                 }
+                remediations_remediation_delete: {
+                    kind: "and"
+                    parts: [{
+                        kind: "ref"
+                        name: "subject"
+                    }, {
+                        kind:     "ref"
+                        name:     "granted"
+                        relation: "remediations_remediation_delete"
+                    }]
+                }
+                tasks_task_view: {
+                    kind: "and"
+                    parts: [{
+                        kind: "ref"
+                        name: "subject"
+                    }, {
+                        kind:     "ref"
+                        name:     "granted"
+                        relation: "tasks_task_view"
+                    }]
+                }
+                tasks_task_update: {
+                    kind: "and"
+                    parts: [{
+                        kind: "ref"
+                        name: "subject"
+                    }, {
+                        kind:     "ref"
+                        name:     "granted"
+                        relation: "tasks_task_update"
+                    }]
+                }
             }
-            data: {}
-        }
-        workspace: {
-            relations: {
+            workspace: {
                 parent: {
                     kind: "assignable"
                     types: [{
@@ -302,6 +429,9 @@ rbac: {
                     }, {
                         kind: "ref"
                         name: "remediations_remediation_view"
+                    }, {
+                        kind: "ref"
+                        name: "tasks_task_view"
                     }]
                 }
                 inventory_host_view: {
@@ -352,30 +482,80 @@ rbac: {
                         relation: "remediations_remediation_update"
                     }]
                 }
+                remediations_remediation_delete: {
+                    kind: "or"
+                    parts: [{
+                        kind:     "ref"
+                        name:     "binding"
+                        relation: "remediations_remediation_delete"
+                    }, {
+                        kind:     "ref"
+                        name:     "parent"
+                        relation: "remediations_remediation_delete"
+                    }]
+                }
+                tasks_task_view: {
+                    kind: "or"
+                    parts: [{
+                        kind:     "ref"
+                        name:     "binding"
+                        relation: "tasks_task_view"
+                    }, {
+                        kind:     "ref"
+                        name:     "parent"
+                        relation: "tasks_task_view"
+                    }]
+                }
+                tasks_task_update: {
+                    kind: "or"
+                    parts: [{
+                        kind:     "ref"
+                        name:     "binding"
+                        relation: "tasks_task_update"
+                    }, {
+                        kind:     "ref"
+                        name:     "parent"
+                        relation: "tasks_task_update"
+                    }]
+                }
             }
-            data: {}
         }
-    }
-    metadata: {
-        "inventory:hosts:write": {
-            application: "inventory"
-            resource:    "hosts"
-            verb:        "write"
-        }
-        "remediations:remediations:read": {
-            application: "remediations"
-            resource:    "remediations"
-            verb:        "read"
-        }
-        "remediations:remediations:write": {
-            application: "remediations"
-            resource:    "remediations"
-            verb:        "write"
-        }
-        "inventory:hosts:read": {
-            application: "inventory"
-            resource:    "hosts"
-            verb:        "read"
+        metadata: {
+            "inventory:hosts:write": {
+                application: "inventory"
+                resource:    "hosts"
+                verb:        "write"
+            }
+            "remediations:remediations:read": {
+                application: "remediations"
+                resource:    "remediations"
+                verb:        "read"
+            }
+            "remediations:remediations:write": {
+                application: "remediations"
+                resource:    "remediations"
+                verb:        "write"
+            }
+            "remediations:remediations:delete": {
+                application: "remediations"
+                resource:    "remediations"
+                verb:        "delete"
+            }
+            "tasks:tasks:read": {
+                application: "tasks"
+                resource:    "tasks"
+                verb:        "read"
+            }
+            "tasks:tasks:write": {
+                application: "tasks"
+                resource:    "tasks"
+                verb:        "write"
+            }
+            "inventory:hosts:read": {
+                application: "inventory"
+                resource:    "hosts"
+                verb:        "read"
+            }
         }
     }
 }

@@ -186,41 +186,24 @@ func visitSchema(v cue.Value, visitor visitors.SchemaVisitor) error {
 			visitor.BeginType(nsName, typeName)
 
 			var relations []any
-			relationsVal := resourceVal.LookupPath(cue.ParsePath("relations"))
-			if relationsVal.Exists() && relationsVal.Err() == nil {
-				relIt, err := relationsVal.Fields(cue.Optional(true))
-				if err != nil {
-					return fmt.Errorf("visitSchema: iterating relations for %s.%s: %w", nsName, typeName, err)
-				}
-				for relIt.Next() {
-					relName := relIt.Selector().String()
-					relBodyVal := relIt.Value()
-
-					visitor.BeginRelation(relName)
-
-					currentDataVal := resourceVal.LookupPath(cue.ParsePath("data"))
-					bodyExpr := visitRelationBody(relBodyVal, currentDataVal, typeNamespaceByTypeName, visitor)
-					relations = append(relations, visitor.VisitRelation(relName, bodyExpr))
-				}
-			}
-
 			var dataFields []any
-			dataVal := resourceVal.LookupPath(cue.ParsePath("data"))
-			if dataVal.Exists() && dataVal.Err() == nil {
-				fieldIt, err := dataVal.Fields(cue.Optional(true))
-				if err != nil {
-					return fmt.Errorf("visitSchema: iterating data fields for %s.%s: %w", nsName, typeName, err)
-				}
-				for fieldIt.Next() {
-					fieldSel := fieldIt.Selector()
-					fieldName := fieldSel.Unquoted()
 
-					// In JSON-schema terms, required fields are those that are not
-					// marked as optional in the CUE source.
-					// `sel.String()` renders a trailing `?` for optional fields.
+			fieldIt, err := resourceVal.Fields(cue.Optional(true))
+			if err != nil {
+				return fmt.Errorf("visitSchema: iterating fields for %s.%s: %w", nsName, typeName, err)
+			}
+			for fieldIt.Next() {
+				fieldSel := fieldIt.Selector()
+				fieldName := fieldSel.Unquoted()
+				fieldVal := fieldIt.Value()
+
+				if isRelationField(fieldVal) {
+					visitor.BeginRelation(fieldName)
+					bodyExpr := visitRelationBody(fieldVal, resourceVal, typeNamespaceByTypeName, visitor)
+					relations = append(relations, visitor.VisitRelation(fieldName, bodyExpr))
+				} else {
+					visitor.BeginDataField(fieldName)
 					required := !strings.HasSuffix(fieldSel.String(), "?")
-
-					fieldVal := fieldIt.Value()
 					dataTypeExpr := visitDataType(fieldVal, visitor)
 					dataFields = append(dataFields, visitor.VisitDataField(fieldName, required, dataTypeExpr))
 				}
@@ -428,6 +411,28 @@ func visitDataType(v cue.Value, visitor visitors.SchemaVisitor) any {
 			return visitor.VisitTextDataType(nil, nil, regex)
 		}
 		return nil
+	}
+}
+
+// isRelationField returns true if the CUE value represents a relation
+// (i.e. a struct with a `kind` field matching a known relation kind).
+func isRelationField(v cue.Value) bool {
+	if v.IncompleteKind() != cue.StructKind {
+		return false
+	}
+	kindVal := v.LookupPath(cue.ParsePath("kind"))
+	if !kindVal.Exists() || kindVal.Err() != nil {
+		return false
+	}
+	k, err := kindVal.String()
+	if err != nil {
+		return false
+	}
+	switch k {
+	case "assignable", "ref", "and", "or", "unless":
+		return true
+	default:
+		return false
 	}
 }
 
